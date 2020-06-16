@@ -1,6 +1,7 @@
 var webpack = require('webpack');
 
 module.exports = {
+  mode: 'development',
   context: __dirname,
   entry: [
     // Add the client which connects to our middleware
@@ -17,8 +18,7 @@ module.exports = {
   },
   devtool: '#source-map',
   plugins: [
-    new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin()
+    new webpack.NoEmitOnErrorsPlugin()
   ],
 };

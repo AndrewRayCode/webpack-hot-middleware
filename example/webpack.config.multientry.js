@@ -2,6 +2,7 @@ var webpack = require('webpack');
 var hotMiddlewareScript = 'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true';
 
 module.exports = {
+  mode: 'development',
   context: __dirname,
   // Include the hot middleware with each entry point
   entry: {
@@ -16,8 +17,8 @@ module.exports = {
   },
   devtool: '#source-map',
   plugins: [
-    new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin()
+    new webpack.NoEmitOnErrorsPlugin()
   ],
 };

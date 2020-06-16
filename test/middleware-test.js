@@ -11,7 +11,7 @@ var webpackHotMiddleware = require('../middleware');
 describe("middleware", function() {
   var s, compiler, app, middleware;
 
-  context("with default options", function() {
+  describe("with default options", function() {
     beforeEach(setupServer({log: function(){}}));
 
     it("should create eventStream on /__webpack_hmr", function(done) {
@@ -51,7 +51,7 @@ describe("middleware", function() {
 
           res.on('data', verify);
 
-          compiler.emit("compile");
+          compiler.emit("invalid");
 
           function verify() {
             assert.equal(res.events.length, 1);
@@ -118,6 +118,24 @@ describe("middleware", function() {
           }
         });
     });
+    it("should notify new clients about current compilation state", function(done) {
+      compiler.emit("done", stats({
+        time: 100,
+        hash: "deadbeeffeddad",
+        warnings: false,
+        errors: false,
+        modules: []
+      }));
+
+      request('/__webpack_hmr')
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.events.length, 1);
+          var event = JSON.parse(res.events[0].substring(5));
+          assert.equal(event.action, "sync");
+          done();
+        });
+    });
     it("should have tests on the payload of bundle complete");
     it("should notify all clients", function(done) {
       request('/__webpack_hmr')
@@ -138,7 +156,7 @@ describe("middleware", function() {
       function when() {
         if (++when.n < 2) return;
 
-        compiler.emit("compile");
+        compiler.emit("invalid");
       }
 
       // Finish test when both requests report data
